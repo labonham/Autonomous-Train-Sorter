@@ -80,6 +80,29 @@ def delay(child_conn):
         child_conn.send("done")
     print("delay terminated")
 
+
+bay_speed_clockwise = {
+        0: 0.25, # untested
+        22: 1.25, # untested
+        35: 0.25, # untested
+        48: 0.25, # untested
+        61: 0.25, # untested
+        74: 0.25, # untested      
+        87: 0.25, # untested   
+        100: 0.25, # untested                    
+}
+
+bay_speed_counterclockwise = {
+        0: 0.25, # untested
+        22: 0.25, # untested
+        35: 0.25, # untested
+        48: 0.25, # untested
+        61: 0.25, # untested
+        74: 0.25, # untested      
+        87: 0.25, # untested   
+        100: 0.25, # untested                    
+}
+    
 def turnTable(bay):
     global pos;
     global kit;
@@ -117,14 +140,20 @@ def turnTable(bay):
             print("pos =", pos)
             kit.stepper1.onestep(direction=stepper.BACKWARD, style=stepper.DOUBLE)
             pos+=1
-            sleep(0.262)
+            if pos > goal_bay - 2:
+                sleep(bay_speed_counterclockwise[goal_bay])
+            else:
+                sleep(0.05)
     else:
         print("Rotating bay clockwise to:", goal_bay)
         while pos > goal_bay:
             print("pos =", pos)
             kit.stepper1.onestep(direction=stepper.FORWARD, style=stepper.DOUBLE)
             pos-=1
-            sleep(0.262)
+            if pos < goal_bay + 2:
+                sleep(bay_speed_clockwise[goal_bay])
+            else:
+                sleep(0.05)
 
 sorting_dict = {}
 queue = []
@@ -229,7 +258,7 @@ def main(parent_conn):
                                 print("next_operation.repeat set to NONE")
                                 operating = False
                         print("OPERATION COMPLETE: num sorted =", num_sorted)
-
+ 
                     
                 # get keys
                 
@@ -376,7 +405,7 @@ decouple_delay = {
         2: 2.13, # good
         3: 2.10, # good
         4: 2.53, # BAY IS BAD, can't decouple
-        5: 2.57, # good
+        5: 2.35, # good
         6: 2.50, # good                       
     },
     "RED": {
@@ -384,12 +413,12 @@ decouple_delay = {
         2: 2.02, # good, may need retesting
         3: 2.21, # good
         4: 2.53, # BAY IS BAD, can't decouple
-        5: 2.57, # good
+        5: 2.57, # untested
         6: 2.56, # good                        
     },
     "BROWN": {
         1: 2.05, # untested
-        2: 2.02, # bad
+        2: 2.02, # attempted seems good
         3: 2.21, # untested
         4: 2.53, # untested
         5: 2.57, # untested

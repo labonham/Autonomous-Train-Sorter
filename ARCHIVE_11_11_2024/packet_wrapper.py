@@ -25,6 +25,9 @@ def function1():
 def bell(n):
     pkt.function(5,0,n)
     
+def mute(n):
+    pkt.function(5,8,n)
+    
 def speed0():
     pkt.speed(0);
 
@@ -48,11 +51,14 @@ def main(args):
     text_input = None
     
     n = 0
+    m = 0
     
     epoll = select.epoll()
     epoll.register(sys.stdin, select.EPOLLIN)
     while(1):
         events = epoll.poll(0)
+        if not events:
+            idle()
         for fd, event in events:
             text_input = sys.stdin.read()
             print("wrapper: ", text_input)
@@ -67,6 +73,9 @@ def main(args):
             elif 'bell' in text_input:
                 n = 1-n
                 bell(n)
+            elif 'mute' in text_input:
+                m = ~m
+                mute(m)
             elif 'function0' in text_input:
                 function()
             elif 'function1' in text_input:
@@ -81,8 +90,6 @@ def main(args):
                 flip2()
             elif 'stop' in text_input:
                 stop()
-            continue
-        idle()
 
     
     pkt.terminate();
